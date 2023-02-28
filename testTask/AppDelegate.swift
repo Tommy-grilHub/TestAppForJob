@@ -16,32 +16,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-        //let mainScreenVC = mainVCConfig()
-        
         let window = UIWindow(frame: UIScreen.main.bounds)
         let navC = UINavigationController(rootViewController: MainScreenController())
         navC.setNavigationBarHidden(true, animated: true)
         window.rootViewController = navC
         
-        //window.rootViewController = mainScreenVC
         window.makeKeyAndVisible()
         self.window = window
 
         return true
     }
-    
-//    private func mainVCConfig() -> UINavigationController {
-//         
-//        let presenter = MainScreenPresenter()
-//        let mainScreen = MainScreenController()
-//        mainScreen.presenter = presenter
-//        presenter.view = mainScreen
-//        //mainScreen.presenter?.getData()
-//        let navVC = UINavigationController(rootViewController: mainScreen)
-//        //navVC.setNavigationBarHidden(true, animated: true)
-//
-//        return navVC
-//    }
 
     // MARK: UISceneSession Lifecycle
 

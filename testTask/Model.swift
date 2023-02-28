@@ -70,10 +70,7 @@ struct DrugEntity: Hashable {
     
     var wideDescription: String
     
-    //var categories: Categories
     var categories: CategoriesHashble
-//    var categories: CategoriesHashble
-    
 }
 
 struct CategoriesHashble: Hashable {
@@ -98,13 +95,3 @@ extension DrugEntity {
         self.categories.name = data.categories?.name ?? ""
     }
 }
-
-//extension CategoriesHashble {
-//    init(data: Drug) {
-//        //self = data.categories
-//        self.id = data.categories?.id ?? 0
-//        self.icon = data.categories?.icon ?? ""
-//        self.image = data.categories?.image ?? ""
-//        self.name = data.categories?.name ?? ""
-//    }
-//}

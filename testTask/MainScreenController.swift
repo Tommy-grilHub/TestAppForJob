@@ -14,14 +14,7 @@ protocol MainScreenProtocol {
     func collectionViewDidLoad()
 }
 
-//class ResultsVC: UIViewController {
-//
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//    }
-//}
-
-class MainScreenController: UIViewController, MainScreenProtocol/*, UISearchResultsUpdating*/ {
+class MainScreenController: UIViewController, MainScreenProtocol {
     
     let titleFont = UIFont.systemFont(ofSize: 13)
     let infoFont = UIFont.systemFont(ofSize: 11)
@@ -30,21 +23,15 @@ class MainScreenController: UIViewController, MainScreenProtocol/*, UISearchResu
     var presenter: MainScreenPresenter?
     var drugs: [DrugEntity] = [DrugEntity]()
     var searchButton = UIBarButtonItem()
-    //var boolTapOnButton = true
     
-    var searchController = UISearchController() //(searchResultsController: ResultsVC())
+    var searchController = UISearchController()
     var filterSearch = [DrugEntity]()
     let enlargedView = ProductOverviewController()
     var pointCell = CGPoint()
-    //(textStyle: .largeTitle)
     
     var backToColViewButton = UIButton()
     var favoritesButton = UIButton()
     var buyButton = UIButton()
-    //UIButton(frame: CGRect(x: view.bounds.width/2 + 450, y: 130, width: 10, height: 10))
-    //var imageForBackCVButton: UIImage? = UIImage(systemName: "xmark.circle")//UIImageView(image: UIImage(systemName: "xmark.circle"))//UIImage(systemName: "xmark.circle")
-    //var config = UIImage.SymbolConfiguration(pointSize: 50, weight: .black, scale: .large)
-    
     
     private var collectionView: UICollectionView = {
         var layout = UICollectionViewFlowLayout()
@@ -61,21 +48,19 @@ class MainScreenController: UIViewController, MainScreenProtocol/*, UISearchResu
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        navigationController?.navigationBar.prefersLargeTitles = true//false//true
+        navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.barStyle = .black
         navigationItem.title = "Товары"
         navigationController?.navigationItem.titleView?.tintColor = .white
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
         navigationController?.navigationBar.barTintColor = #colorLiteral(red: 0.6068962216, green: 0.7755689025, blue: 0.7669673562, alpha: 1)
-        navigationController?.navigationBar.tintColor = .black//.white
+        navigationController?.navigationBar.tintColor = .black
 
         navigationItem.searchController = searchController
-        //searchController.hidesNavigationBarDuringPresentation = false
         navigationItem.hidesSearchBarWhenScrolling = false
         
         let searchButtonImage = UIImage(systemName: "magnifyingglass")
         searchButton = UIBarButtonItem(image: searchButtonImage, style: .plain, target: self, action: #selector(didTapSearchButton))
-        //navigationItem.rightBarButtonItem = searchButton
     }
 
     @objc public func didTapSearchButton() {
@@ -104,7 +89,6 @@ class MainScreenController: UIViewController, MainScreenProtocol/*, UISearchResu
     
     func searchControllerConfiguration() {
         searchController.searchBar.delegate = self
-        //searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.keyboardAppearance = .light
         searchController.searchBar.tintColor = .white
@@ -132,7 +116,7 @@ class MainScreenController: UIViewController, MainScreenProtocol/*, UISearchResu
         let cellRect = collectionView.cellForItem(at: indexPath)
         let y = cellRect?.frame.origin.y ?? 0
         let contentOffsetY = collectionView.contentOffset.y
-/*?*/   let contentOffsetX: CGFloat =  indexPath.item % 2 == 0 ? 22 : 198 // высчитать более точно значение положения левых ячеек
+        let contentOffsetX: CGFloat =  indexPath.item % 2 == 0 ? 22 : 198
         print("x: \(contentOffsetX)")
         print("y: \(y - contentOffsetY)")
         return CGPoint(x: contentOffsetX, y: y - contentOffsetY)
@@ -165,7 +149,7 @@ class MainScreenController: UIViewController, MainScreenProtocol/*, UISearchResu
         UIView.animate(withDuration: 0.3, delay: 0.5, animations: {
             self.enlargedView.card.backgroundColor = .clear
         })
-        UIView.animate(withDuration: 0.6, delay: 0.7, animations: { // в обратную сторону
+        UIView.animate(withDuration: 0.6, delay: 0.7, animations: {
             self.enlargedView.shadow.frame = CGRect(x: indexPath.item%2 == 0 ? 27 : self.pointCell.x/5 - 15, y: 10, width: 100, height: 140)
             self.enlargedView.image.frame = CGRect(x: indexPath.item%2 == 0 ? 38 : self.pointCell.x/5 - 6, y: 15, width: 80, height: 130)
             self.enlargedView.card.frame = CGRect(origin: self.pointCell, size: cellRect?.bounds.size ?? CGSize(width: 0, height: 0))
@@ -222,7 +206,6 @@ class MainScreenController: UIViewController, MainScreenProtocol/*, UISearchResu
         favoritesButton.frame = CGRect(x: 194, y: 17, width: 30, height: 27)
         enlargedView.card.addSubview(favoritesButton)
         
-        //buyButton.setImage(imageForBackCVButton, for: .normal)
         buyButton.setTitle("ГДЕ КУПИТЬ", for: .normal)
         buyButton.setTitleColor(.gray, for: .normal)
         buyButton.backgroundColor = #colorLiteral(red: 0.5124076009, green: 1, blue: 0.9198634028, alpha: 1)

@@ -13,10 +13,10 @@ import UIKit
 class HelperCollectionView {
     
     func estimatedHeightOfLabel(text: String, font: UIFont, frame: CGRect) -> CGRect {
-        let size = CGSize(width: frame.width, height: frame.height) //view.frame.width/2.4 - 20
+        let size = CGSize(width: frame.width, height: frame.height)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let attributes = [NSAttributedString.Key.font: font]
-        let rectangleSize = String(text).boundingRect(with: size, options: options, attributes: attributes, context: nil) //+ 5
+        let rectangleSize = String(text).boundingRect(with: size, options: options, attributes: attributes, context: nil)
         return rectangleSize
     }
     
@@ -43,7 +43,7 @@ class HelperCollectionView {
         var drugs = drugs
 
         for i in 0..<drugs.count {
-            drugs[i].description.append(" &") //= drugs[i].description + " "
+            drugs[i].description.append(" &")
             var initialLine = ""
             var word = ""
             var finalLine = ""
@@ -76,9 +76,8 @@ class HelperCollectionView {
         return drugs
     }
     
-    func returnImage(urlString: String/*item: DrugEntity*/) -> URL {
+    func returnImage(urlString: String) -> URL {
         let errorUrl = URL(string: "http://shans.d2.i-partner.ru")!
-        //let txtAppend = (item.image).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
         let txtAppend = (urlString).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
         let urlString = "http://shans.d2.i-partner.ru\(txtAppend!)"
         guard let openUrl = URL(string: urlString) else { return errorUrl }

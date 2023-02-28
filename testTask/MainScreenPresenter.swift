@@ -15,7 +15,6 @@ class MainScreenPresenter {
     var urlDrugs = "http://shans.d2.i-partner.ru/api/ppp/index/"
     let requestData = RequestData()
     var token = "dimaYak"
-    //let params: Parameters = []
     
     var headers: HTTPHeaders {
         get {

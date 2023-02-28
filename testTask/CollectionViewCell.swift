@@ -9,18 +9,6 @@
 import UIKit
 import SnapKit
 
-//private enum State {
-//    case expanded
-//    case collapsed
-//
-//    var change: State {
-//        switch self {
-//        case .expanded: return .collapsed
-//        case .collapsed: return .expanded
-//        }
-//    }
-//} 
-
 class CollectionViewCell: UICollectionViewCell {
     static let identifier = "customCell"
 
@@ -29,8 +17,6 @@ class CollectionViewCell: UICollectionViewCell {
     var info = UILabel()
     var shadow = UIView()
     
-    //var backToColViewButton = UIButton()
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.backgroundColor = UIColor.clear
@@ -38,7 +24,6 @@ class CollectionViewCell: UICollectionViewCell {
         contentView.addSubview(image)
         contentView.addSubview(title)
         contentView.addSubview(info)
-        //contentView.addSubview(backToColViewButton)
         configureCell()
     }
     
@@ -54,7 +39,6 @@ class CollectionViewCell: UICollectionViewCell {
         shadowConstraints()
         imageConstraints()
         labelConstraints()
-        backButtonConstraints()
     }
     
     func configureImage() {
@@ -82,10 +66,6 @@ class CollectionViewCell: UICollectionViewCell {
         shadow.layer.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         shadow.layer.shadowRadius = 5
         shadow.layer.shadowOpacity = 0.7
-    }
-    func backButtonConstraints() {
-        //backToColViewButton.translatesAutoresizingMaskIntoConstraints = false
-        //backToColViewButton.frame = CGRect(x: 0, y: 0, width: 0, height: 0)
     }
     
     func shadowConstraints() {
