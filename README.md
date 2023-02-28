@@ -1,6 +1,6 @@
 # TestAppForJob
 1. MainScreenController.swift:
-В данном файле описсанно главное отображение информации с api.
+В данном файле описанно главное отображение информации с api.
 Представление отобржается с помощью кастомной колекции, описанной в файле CollectionViewCell.swift, и реализован поиск ячеек по title.
 Так же данный файл имеет Presenter (MainScreenPresenter.swift), в который я вынес подгрузку данных по api, который использует макет метода, описанного в файле ReauestData.swift.
 2. ProductOverviewController.swift:
