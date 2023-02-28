@@ -33,6 +33,8 @@ class MainScreenController: UIViewController, MainScreenProtocol {
     var favoritesButton = UIButton()
     var buyButton = UIButton()
     
+    var blurEffectView = UIVisualEffectView()
+    
     private var collectionView: UICollectionView = {
         var layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -126,9 +128,6 @@ class MainScreenController: UIViewController, MainScreenProtocol {
         backToColViewButton.tintColor = .black
         let indexPath = collectionView.indexPathForItem(at: pointCell) ?? IndexPath(item: 0, section: 0)
         let cellRect = collectionView.cellForItem(at: indexPath)
-        if let viewWithTag = self.view.viewWithTag(120) {
-            viewWithTag.removeFromSuperview()
-        }
         UIView.animate(withDuration: 1.4, animations: {
             self.navigationController?.setNavigationBarHidden(false, animated: true)
         })
@@ -148,6 +147,7 @@ class MainScreenController: UIViewController, MainScreenProtocol {
         })
         UIView.animate(withDuration: 0.3, delay: 0.5, animations: {
             self.enlargedView.card.backgroundColor = .clear
+            self.blurEffectView.alpha = 0
         })
         UIView.animate(withDuration: 0.6, delay: 0.7, animations: {
             self.enlargedView.shadow.frame = CGRect(x: indexPath.item%2 == 0 ? 27 : self.pointCell.x/5 - 15, y: 10, width: 100, height: 140)
@@ -165,6 +165,7 @@ class MainScreenController: UIViewController, MainScreenProtocol {
             self.enlargedView.shadow.frame = CGRect(origin: CGPoint(x: -1000, y: -1000), size: CGSize(width: 80, height: 130))
             self.enlargedView.image.frame = CGRect(origin: CGPoint(x: -1000, y: -1000), size: CGSize(width: 100, height: 140))
             self.enlargedView.imageCatigories.frame = CGRect(origin: CGPoint(x: -1000, y: -1000), size: CGSize(width: 50, height: 50))
+            self.blurEffectView.frame = CGRect(origin: CGPoint(x: -1000, y: -1000), size: CGSize(width: 0, height: 0))
         })
         collectionViewDidLoad()
     }
@@ -179,13 +180,12 @@ class MainScreenController: UIViewController, MainScreenProtocol {
     }
     
     func configureBlurView() {
-        var blurEffectView = UIVisualEffectView()
         let blurEffect = UIBlurEffect(style: .dark)
         blurEffectView = UIVisualEffectView(effect: blurEffect)
         blurEffectView.frame = view.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         blurEffectView.tag = 120
-        blurEffectView.alpha = 0.5
+        blurEffectView.alpha = 0
         view.insertSubview(blurEffectView, belowSubview: enlargedView.view)
     }
     
@@ -258,6 +258,9 @@ extension MainScreenController: UICollectionViewDelegateFlowLayout, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let viewWithTag = self.view.viewWithTag(120) {
+            viewWithTag.removeFromSuperview()
+        }
         enlargedView.view.removeFromSuperview()
         enlargedView.view.backgroundColor = .clear
         enlargedView.card.backgroundColor = .clear
@@ -288,9 +291,11 @@ extension MainScreenController: UICollectionViewDelegateFlowLayout, UICollection
         enlargedView.shadow.backgroundColor = #colorLiteral(red: 0, green: 0.8183047175, blue: 0.8288889527, alpha: 1)//#colorLiteral(red: 0.5622858405, green: 0.6904055476, blue: 1, alpha: 1)
         enlargedView.image.frame = CGRect(x: indexPath.item%2 == 0 ? enlargedView.card.center.x/2 - 10 : pointCell.x/5 - 6, y: 15, width: 80, height: 130)
         enlargedView.imageCatigories.frame = CGRect(x: indexPath.item%2 == 0 ? enlargedView.card.center.x/2 - 37 : pointCell.x/5 - 27, y: 15, width: 50, height: 50)
+        configureBlurView()
         
         UIView.animate(withDuration: 0.3, animations: {
             self.enlargedView.shadow.backgroundColor = #colorLiteral(red: 0.6836525798, green: 1, blue: 0.9262554049, alpha: 0.7475987555)
+            self.blurEffectView.alpha = 0.6
         })
         UIView.animate(withDuration: 0.8, animations: {
             self.enlargedView.card.backgroundColor = .white
@@ -314,7 +319,6 @@ extension MainScreenController: UICollectionViewDelegateFlowLayout, UICollection
             self.enlargedView.info.alpha = 1
             self.buyButton.alpha = 1
         })
-        configureBlurView()
         print("index: \(indexPath)")
     }
     
