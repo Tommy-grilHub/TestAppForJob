@@ -119,8 +119,6 @@ class MainScreenController: UIViewController, MainScreenProtocol {
         let y = cellRect?.frame.origin.y ?? 0
         let contentOffsetY = collectionView.contentOffset.y
         let contentOffsetX: CGFloat =  indexPath.item % 2 == 0 ? 22 : 198
-        print("x: \(contentOffsetX)")
-        print("y: \(y - contentOffsetY)")
         return CGPoint(x: contentOffsetX, y: y - contentOffsetY)
     }
     
@@ -217,6 +215,41 @@ class MainScreenController: UIViewController, MainScreenProtocol {
         buyButton.frame = CGRect(x: 25, y: 440, width: 250, height: 40)
         enlargedView.card.addSubview(buyButton)
     }
+    
+    func defaultValue(indexPath: IndexPath) {
+        if let viewWithTag = self.view.viewWithTag(120) {
+            viewWithTag.removeFromSuperview()
+        }
+        enlargedView.view.removeFromSuperview()
+        enlargedView.view.backgroundColor = .clear
+        enlargedView.card.backgroundColor = .clear
+        enlargedView.card.layer.shadowOffset = CGSize(width: 0, height: 3)
+        enlargedView.card.layer.shadowColor = #colorLiteral(red: 0, green: 0.8183047175, blue: 0.8288889527, alpha: 1)
+        enlargedView.card.layer.shadowRadius = 10
+        enlargedView.card.layer.shadowOpacity = 1
+        backToColViewButton.alpha = 0
+        favoritesButton.alpha = 0
+        buyButton.alpha = 0
+        
+        enlargedView.shadow.alpha = 1
+        enlargedView.image.alpha = 1
+        enlargedView.imageCatigories.alpha = 0
+        enlargedView.name.alpha = 0
+        enlargedView.info.alpha = 0
+        
+        enlargedView.setData(drug: filterSearch != [] ? filterSearch[indexPath.item] : drugs[indexPath.item])
+        view.addSubview(enlargedView.view)
+        
+        let cellRect = collectionView.cellForItem(at: indexPath)
+        pointCell = getElementCoordinate(indexPath: indexPath)
+        enlargedView.view.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: self.view.frame.size)
+        enlargedView.card.frame = CGRect(origin: pointCell, size: cellRect?.bounds.size ?? CGSize(width: 0, height: 0))
+        
+        enlargedView.shadow.frame = CGRect(x: indexPath.item%2 == 0 ? enlargedView.card.center.x/2 - 21 : pointCell.x/5 - 15, y: 10, width: 100, height: 140)
+        enlargedView.shadow.backgroundColor = #colorLiteral(red: 0, green: 0.8183047175, blue: 0.8288889527, alpha: 1)//#colorLiteral(red: 0.5622858405, green: 0.6904055476, blue: 1, alpha: 1)
+        enlargedView.image.frame = CGRect(x: indexPath.item%2 == 0 ? enlargedView.card.center.x/2 - 10 : pointCell.x/5 - 6, y: 15, width: 80, height: 130)
+        enlargedView.imageCatigories.frame = CGRect(x: indexPath.item%2 == 0 ? enlargedView.card.center.x/2 - 37 : pointCell.x/5 - 27, y: 15, width: 50, height: 50)
+    }
 }
 
 extension MainScreenController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UISearchBarDelegate, UISearchControllerDelegate {
@@ -258,39 +291,8 @@ extension MainScreenController: UICollectionViewDelegateFlowLayout, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let viewWithTag = self.view.viewWithTag(120) {
-            viewWithTag.removeFromSuperview()
-        }
-        enlargedView.view.removeFromSuperview()
-        enlargedView.view.backgroundColor = .clear
-        enlargedView.card.backgroundColor = .clear
-        enlargedView.card.layer.shadowOffset = CGSize(width: 0, height: 3)
-        enlargedView.card.layer.shadowColor = #colorLiteral(red: 0, green: 0.8183047175, blue: 0.8288889527, alpha: 1)
-        enlargedView.card.layer.shadowRadius = 10
-        enlargedView.card.layer.shadowOpacity = 1
-        backToColViewButton.alpha = 0
-        favoritesButton.alpha = 0
-        buyButton.alpha = 0
-        
-        enlargedView.shadow.alpha = 1
-        enlargedView.image.alpha = 1
-        enlargedView.imageCatigories.alpha = 0
-        enlargedView.name.alpha = 0
-        enlargedView.info.alpha = 0
-        
-        enlargedView.setData(drug: filterSearch != [] ? filterSearch[indexPath.item] : drugs[indexPath.item])
-        view.addSubview(enlargedView.view)
+        defaultValue(indexPath: indexPath)
         buttonConfigure()
-        
-        let cellRect = collectionView.cellForItem(at: indexPath)
-        pointCell = getElementCoordinate(indexPath: indexPath)
-        enlargedView.view.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: self.view.frame.size)
-        enlargedView.card.frame = CGRect(origin: pointCell, size: cellRect?.bounds.size ?? CGSize(width: 0, height: 0))
-        
-        enlargedView.shadow.frame = CGRect(x: indexPath.item%2 == 0 ? enlargedView.card.center.x/2 - 21 : pointCell.x/5 - 15, y: 10, width: 100, height: 140)
-        enlargedView.shadow.backgroundColor = #colorLiteral(red: 0, green: 0.8183047175, blue: 0.8288889527, alpha: 1)//#colorLiteral(red: 0.5622858405, green: 0.6904055476, blue: 1, alpha: 1)
-        enlargedView.image.frame = CGRect(x: indexPath.item%2 == 0 ? enlargedView.card.center.x/2 - 10 : pointCell.x/5 - 6, y: 15, width: 80, height: 130)
-        enlargedView.imageCatigories.frame = CGRect(x: indexPath.item%2 == 0 ? enlargedView.card.center.x/2 - 37 : pointCell.x/5 - 27, y: 15, width: 50, height: 50)
         configureBlurView()
         
         UIView.animate(withDuration: 0.3, animations: {
@@ -319,7 +321,6 @@ extension MainScreenController: UICollectionViewDelegateFlowLayout, UICollection
             self.enlargedView.info.alpha = 1
             self.buyButton.alpha = 1
         })
-        print("index: \(indexPath)")
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -331,7 +332,6 @@ extension MainScreenController: UICollectionViewDelegateFlowLayout, UICollection
         }
         let item = filterSearch[indexPath.row]
         cell = helperCV.setDataToCell(cell: cell, item: item)
-        print("перезагрузка!)")
         return cell
     }
 }
