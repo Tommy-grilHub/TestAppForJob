@@ -29,7 +29,6 @@ class MainScreenPresenter {
                 do {
                     let drugs = try JSONDecoder().decode(Drugs.self, from: data)
                     let entityDrugs = drugs.map{ DrugEntity(data: $0) }
-                    print("good")
                     self.view?.getDrugs(drugs: entityDrugs)
                     self.view?.collectionViewDidLoad()
                 } catch {

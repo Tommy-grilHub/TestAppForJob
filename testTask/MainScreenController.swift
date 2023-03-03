@@ -73,7 +73,6 @@ class MainScreenController: UIViewController, MainScreenProtocol {
         super.viewDidLoad()
         searchControllerConfiguration()
         view.backgroundColor = #colorLiteral(red: 0.6068962216, green: 0.7755689025, blue: 0.7669673562, alpha: 1)
-        print(view.frame)
         view.addSubview(collectionView)
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -152,7 +151,6 @@ class MainScreenController: UIViewController, MainScreenProtocol {
             self.enlargedView.image.frame = CGRect(x: indexPath.item%2 == 0 ? 38 : self.pointCell.x/5 - 6, y: 15, width: 80, height: 130)
             self.enlargedView.card.frame = CGRect(origin: self.pointCell, size: cellRect?.bounds.size ?? CGSize(width: 0, height: 0))
         })
-        
         UIView.animate(withDuration: 0.001, delay: 1.3, animations: {
             self.enlargedView.shadow.alpha = 0
             self.enlargedView.image.alpha = 0
@@ -250,6 +248,12 @@ class MainScreenController: UIViewController, MainScreenProtocol {
         enlargedView.image.frame = CGRect(x: indexPath.item%2 == 0 ? enlargedView.card.center.x/2 - 10 : pointCell.x/5 - 6, y: 15, width: 80, height: 130)
         enlargedView.imageCatigories.frame = CGRect(x: indexPath.item%2 == 0 ? enlargedView.card.center.x/2 - 37 : pointCell.x/5 - 27, y: 15, width: 50, height: 50)
     }
+    
+    func showAlert(massage: String) {
+        let alert = UIAlertController(title: "Поиск товара", message: massage, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
 }
 
 extension MainScreenController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UISearchBarDelegate, UISearchControllerDelegate {
@@ -270,6 +274,10 @@ extension MainScreenController: UICollectionViewDelegateFlowLayout, UICollection
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        if filterSearch.isEmpty {
+            self.showAlert(massage: "Товар по вашему запросу не найден.")
+            searchBar.text = nil
+        }
         collectionViewDidLoad()
     }
     
