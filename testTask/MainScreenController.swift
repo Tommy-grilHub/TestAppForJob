@@ -175,6 +175,14 @@ class MainScreenController: UIViewController, MainScreenProtocol {
         })
     }
     
+    @objc func cleckOnWereBuy(_ sender: UIButton) {
+        buyButton.setTitleColor(.black, for: .normal)
+        buyButton.frame = CGRect(x: 32, y: 444, width: 240, height: 38)
+        UIView.animate(withDuration: 0.1, delay: 0.1, animations: {
+            self.buyButton.frame = CGRect(x: 25, y: 440, width: 250, height: 40)
+        })
+    }
+    
     func configureBlurView() {
         let blurEffect = UIBlurEffect(style: .dark)
         blurEffectView = UIVisualEffectView(effect: blurEffect)
@@ -204,6 +212,7 @@ class MainScreenController: UIViewController, MainScreenProtocol {
         
         buyButton.setTitle("ГДЕ КУПИТЬ", for: .normal)
         buyButton.setTitleColor(.gray, for: .normal)
+        buyButton.addTarget(self, action: #selector(cleckOnWereBuy), for: .touchUpInside)
         buyButton.backgroundColor = #colorLiteral(red: 0.5124076009, green: 1, blue: 0.9198634028, alpha: 1)
         buyButton.layer.cornerRadius = 10
         buyButton.layer.shadowOffset = CGSize(width: 0, height: 3)
@@ -228,6 +237,7 @@ class MainScreenController: UIViewController, MainScreenProtocol {
         backToColViewButton.alpha = 0
         favoritesButton.alpha = 0
         buyButton.alpha = 0
+        buyButton.setTitleColor(.gray, for: .normal)
         
         enlargedView.shadow.alpha = 1
         enlargedView.image.alpha = 1
