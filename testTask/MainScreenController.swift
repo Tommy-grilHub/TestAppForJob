@@ -178,10 +178,11 @@ class MainScreenController: UIViewController, MainScreenProtocol {
     }
     
     @objc func cleckOnWereBuy(_ sender: UIButton) {
+        let width = view.frame.width/10
         buyButton.setTitleColor(.black, for: .normal)
-        buyButton.frame = CGRect(x: 32, y: 444, width: 240, height: 38)
+        buyButton.frame = CGRect(x: width - 20, y: 446, width: width*6, height: 36)
         UIView.animate(withDuration: 0.1, delay: 0.1, animations: {
-            self.buyButton.frame = CGRect(x: 25, y: 440, width: 250, height: 40)
+            self.buyButton.frame = CGRect(x: width - 20, y: 440, width: width*6, height: 40)
         })
     }
     
