@@ -86,16 +86,18 @@ class ProductOverviewController: UIViewController {
     }
     
     func textConstraints() {
+        let spaceHeight = view.frame.height/5
+        let spaceWidth = 3*view.frame.width/10
         name.snp.makeConstraints { maker in
-            maker.top.equalToSuperview().inset(370)
+            maker.top.equalToSuperview().inset(spaceHeight/2 + 240) //210
             maker.centerX.equalToSuperview()
-            maker.leading.trailing.equalToSuperview().inset(50)
+            maker.leading.trailing.equalToSuperview().inset(spaceWidth)
         }
 
         info.snp.makeConstraints { maker in
-            maker.top.equalTo(name.snp.bottom).inset(-10)
+            maker.top.equalTo(name.snp.bottom).inset(-5)
             maker.centerX.equalToSuperview()
-            maker.leading.trailing.equalToSuperview().inset(50)
+            maker.leading.trailing.equalToSuperview().inset(spaceWidth/2)
             
         }
     }

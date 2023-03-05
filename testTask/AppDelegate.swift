@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         let window = UIWindow(frame: UIScreen.main.bounds)
-        let navC = UINavigationController(rootViewController: MainScreenController())
+        let navC = UINavigationController(rootViewController: TaskBarViewController())
         navC.setNavigationBarHidden(true, animated: true)
         window.rootViewController = navC
         

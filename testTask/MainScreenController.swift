@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import SnapKit
 
 protocol MainScreenProtocol {
     func getDrugs(drugs: [DrugEntity])
@@ -49,7 +48,9 @@ class MainScreenController: UIViewController, MainScreenProtocol {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        //var tabBar = TaskBarViewController()//UITabBar()
+        //tabBar.tabBarItem.tag = 0
+        //navigationController?.tabBarItem = tabBar.tabBarItem
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.barStyle = .black
         navigationItem.title = "Товары"
@@ -79,7 +80,7 @@ class MainScreenController: UIViewController, MainScreenProtocol {
         collectionView.contentInset = .init(
             top: 15,
             left: 22,
-            bottom: 0,
+            bottom: 25,
             right: 22
         )
         setCollectionViewConstraints()
@@ -122,6 +123,7 @@ class MainScreenController: UIViewController, MainScreenProtocol {
     }
     
     @objc func backButtonClickInLargeView(_ sender: UIButton) {
+        let width = view.frame.width/10
         backToColViewButton.tintColor = .black
         let indexPath = collectionView.indexPathForItem(at: pointCell) ?? IndexPath(item: 0, section: 0)
         let cellRect = collectionView.cellForItem(at: indexPath)
@@ -129,10 +131,10 @@ class MainScreenController: UIViewController, MainScreenProtocol {
             self.navigationController?.setNavigationBarHidden(false, animated: true)
         })
         UIView.animate(withDuration: 0.1, animations: {
-            self.backToColViewButton.frame = CGRect(x: 250, y: 5, width: 35, height: 35)
+            self.backToColViewButton.frame = CGRect(x: 8*width - 60, y: 5, width: 35, height: 35) //250
         })
         UIView.animate(withDuration: 0.1, delay: 0.1, animations: {
-            self.backToColViewButton.frame = CGRect(x: 260, y: 5, width: 35, height: 35)
+            self.backToColViewButton.frame = CGRect(x: 8*width - 40, y: 5, width: 35, height: 35) //260
         })
         UIView.animate(withDuration: 0.5, delay: 0.2, animations: {
             self.enlargedView.imageCatigories.alpha = 0
@@ -154,14 +156,14 @@ class MainScreenController: UIViewController, MainScreenProtocol {
         UIView.animate(withDuration: 0.001, delay: 1.3, animations: {
             self.enlargedView.shadow.alpha = 0
             self.enlargedView.image.alpha = 0
-            self.enlargedView.view.frame.origin = CGPoint(x: -1000, y: -1000)
-            self.enlargedView.card.frame.origin = CGPoint(x: -1000, y: -1000)
-            self.backToColViewButton.frame.origin = CGPoint(x: -1000, y: -1000)
-            self.favoritesButton.frame.origin = CGPoint(x: -1000, y: -1000)
-            self.enlargedView.shadow.frame = CGRect(origin: CGPoint(x: -1000, y: -1000), size: CGSize(width: 80, height: 130))
-            self.enlargedView.image.frame = CGRect(origin: CGPoint(x: -1000, y: -1000), size: CGSize(width: 100, height: 140))
-            self.enlargedView.imageCatigories.frame = CGRect(origin: CGPoint(x: -1000, y: -1000), size: CGSize(width: 50, height: 50))
-            self.blurEffectView.frame = CGRect(origin: CGPoint(x: -1000, y: -1000), size: CGSize(width: 0, height: 0))
+            self.enlargedView.view.frame.origin = CGPoint(x: -1000, y: 0)
+            self.enlargedView.card.frame.origin = CGPoint(x: -1000, y: 0)
+            self.backToColViewButton.frame.origin = CGPoint(x: -1000, y: 0)
+            self.favoritesButton.frame.origin = CGPoint(x: -1000, y: 0)
+            self.enlargedView.shadow.frame = CGRect(origin: CGPoint(x: -1000, y: 0), size: CGSize(width: 80, height: 130))
+            self.enlargedView.image.frame = CGRect(origin: CGPoint(x: -1000, y: 0), size: CGSize(width: 100, height: 140))
+            self.enlargedView.imageCatigories.frame = CGRect(origin: CGPoint(x: -1000, y: 0), size: CGSize(width: 50, height: 50))
+            self.blurEffectView.frame = CGRect(origin: CGPoint(x: -1000, y: 0), size: CGSize(width: 0, height: 0))
         })
         collectionViewDidLoad()
     }
@@ -207,7 +209,8 @@ class MainScreenController: UIViewController, MainScreenProtocol {
         favoritesButton.setImage(imageForBackCVButton, for: .normal)
         favoritesButton.addTarget(self, action: #selector(clickOnFavoritesButton), for: .touchUpInside)
         favoritesButton.tintColor = .gray
-        favoritesButton.frame = CGRect(x: 194, y: 17, width: 30, height: 27)
+        let width = view.frame.width/10
+        favoritesButton.frame = CGRect(x: 8*width - 50, y: 445, width: 35, height: 32)
         enlargedView.card.addSubview(favoritesButton)
         
         buyButton.setTitle("ГДЕ КУПИТЬ", for: .normal)
@@ -219,7 +222,7 @@ class MainScreenController: UIViewController, MainScreenProtocol {
         buyButton.layer.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         buyButton.layer.shadowRadius = 10
         buyButton.layer.shadowOpacity = 0.5
-        buyButton.frame = CGRect(x: 25, y: 440, width: 250, height: 40)
+        buyButton.frame = CGRect(x: width - 20, y: 440, width: width*6, height: 40)
         enlargedView.card.addSubview(buyButton)
     }
     
@@ -254,7 +257,7 @@ class MainScreenController: UIViewController, MainScreenProtocol {
         enlargedView.card.frame = CGRect(origin: pointCell, size: cellRect?.bounds.size ?? CGSize(width: 0, height: 0))
         
         enlargedView.shadow.frame = CGRect(x: indexPath.item%2 == 0 ? enlargedView.card.center.x/2 - 21 : pointCell.x/5 - 15, y: 10, width: 100, height: 140)
-        enlargedView.shadow.backgroundColor = #colorLiteral(red: 0, green: 0.8183047175, blue: 0.8288889527, alpha: 1)//#colorLiteral(red: 0.5622858405, green: 0.6904055476, blue: 1, alpha: 1)
+        enlargedView.shadow.backgroundColor = #colorLiteral(red: 0, green: 0.8183047175, blue: 0.8288889527, alpha: 1)
         enlargedView.image.frame = CGRect(x: indexPath.item%2 == 0 ? enlargedView.card.center.x/2 - 10 : pointCell.x/5 - 6, y: 15, width: 80, height: 130)
         enlargedView.imageCatigories.frame = CGRect(x: indexPath.item%2 == 0 ? enlargedView.card.center.x/2 - 37 : pointCell.x/5 - 27, y: 15, width: 50, height: 50)
     }
@@ -318,12 +321,15 @@ extension MainScreenController: UICollectionViewDelegateFlowLayout, UICollection
             self.blurEffectView.alpha = 0.6
         })
         UIView.animate(withDuration: 0.8, animations: {
+            let spaceHeight = self.view.frame.height/5
+            var spaceWidth = self.view.frame.width/10
             self.enlargedView.card.backgroundColor = .white
-            self.backToColViewButton.frame = CGRect(x: 260, y: 5, width: 35, height: 35)
-            self.enlargedView.card.frame = CGRect(x: self.view.center.x - 150, y: 130, width: 300, height: 500)
-            self.enlargedView.shadow.frame = CGRect(x: 75, y: 15, width: 150, height: 210)
+            self.backToColViewButton.frame = CGRect(x: 8*spaceWidth - 40, y: 5, width: 35, height: 35)
+            self.enlargedView.card.frame = CGRect(x: spaceWidth, y: spaceHeight/2, width: spaceWidth*8, height: 500)
+            spaceWidth = self.enlargedView.card.frame.width/2
+            self.enlargedView.shadow.frame = CGRect(x: spaceWidth - 150/2, y: 15, width: 150, height: 210)
             self.enlargedView.shadow.alpha = 1
-            self.enlargedView.image.frame = CGRect(x: self.enlargedView.card.center.x/2 - 3.5, y: 22, width: 120, height: 195)
+            self.enlargedView.image.frame = CGRect(x: spaceWidth - 120/2, y: 22, width: 120, height: 195)
             self.enlargedView.image.alpha = 1
             
             self.navigationController?.setNavigationBarHidden(true, animated: true)

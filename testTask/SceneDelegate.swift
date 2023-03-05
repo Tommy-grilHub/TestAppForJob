@@ -29,12 +29,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func mainVCConfig() -> UINavigationController {
-         
-        let presenter = MainScreenPresenter()
-        let mainScreen = MainScreenController()
-        mainScreen.presenter = presenter
-        presenter.view = mainScreen
-        let navVC = UINavigationController(rootViewController: mainScreen)
+        let taskBarView = TaskBarViewController()
+        let navVC = UINavigationController(rootViewController: taskBarView)
+        navVC.isNavigationBarHidden = true
         return navVC
     }
 
