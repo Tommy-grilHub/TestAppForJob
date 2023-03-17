@@ -39,6 +39,7 @@ class ProductOverviewController: UIViewController {
         imageCatigories.download(from: imageUrl)
         name.text = drug.name
         info.text = drug.wideDescription
+        print(drug.categories.name)
     }
     
     func configureCell() {
@@ -91,7 +92,7 @@ class ProductOverviewController: UIViewController {
         name.snp.makeConstraints { maker in
             maker.top.equalToSuperview().inset(spaceHeight/2 + 240) //210
             maker.centerX.equalToSuperview()
-            maker.leading.trailing.equalToSuperview().inset(spaceWidth)
+            maker.leading.trailing.equalToSuperview().inset(spaceWidth/2)
         }
 
         info.snp.makeConstraints { maker in

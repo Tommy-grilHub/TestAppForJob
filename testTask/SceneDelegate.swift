@@ -21,14 +21,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
-        let mainScreenVC = mainVCConfig()
+        let taskBarVC = taskBarVCConfig()
         
-        window.rootViewController = mainScreenVC
+        window.rootViewController = taskBarVC
         window.makeKeyAndVisible()
         self.window = window
     }
     
-    private func mainVCConfig() -> UINavigationController {
+    private func taskBarVCConfig() -> UINavigationController {
         let taskBarView = TaskBarViewController()
         let navVC = UINavigationController(rootViewController: taskBarView)
         navVC.isNavigationBarHidden = true

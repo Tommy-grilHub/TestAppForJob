@@ -7,10 +7,12 @@
 //
 
 import UIKit
+import SnapKit
 
 protocol MainScreenProtocol {
     func getDrugs(drugs: [DrugEntity])
     func collectionViewDidLoad()
+    func getCatigories(catigories: [String])
 }
 
 class MainScreenController: UIViewController, MainScreenProtocol {
@@ -34,6 +36,9 @@ class MainScreenController: UIViewController, MainScreenProtocol {
     
     var blurEffectView = UIVisualEffectView()
     
+    let filtersVC = FiltersController()
+    var drugsWithCatigories: [DrugEntity] = [DrugEntity]()
+    
     private var collectionView: UICollectionView = {
         var layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -48,9 +53,6 @@ class MainScreenController: UIViewController, MainScreenProtocol {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        //var tabBar = TaskBarViewController()//UITabBar()
-        //tabBar.tabBarItem.tag = 0
-        //navigationController?.tabBarItem = tabBar.tabBarItem
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.barStyle = .black
         navigationItem.title = "Товары"
@@ -87,6 +89,11 @@ class MainScreenController: UIViewController, MainScreenProtocol {
         
         presenter?.view = self
         presenter?.getData()
+        filtersVC.filtesCCell.mainScreen = self
+        
+        navigationController?.isModalInPresentation = false
+        navigationController?.modalPresentationStyle = .popover
+        navigationController?.modalTransitionStyle = .coverVertical
     }
     
     func searchControllerConfiguration() {
@@ -95,6 +102,8 @@ class MainScreenController: UIViewController, MainScreenProtocol {
         searchController.searchBar.keyboardAppearance = .light
         searchController.searchBar.tintColor = .white
         searchController.searchBar.placeholder = "поиск"
+        searchController.searchBar.showsBookmarkButton = true
+        searchController.searchBar.setImage(UIImage(named: "slider.horizontal"), for: .bookmark, state: .normal)
     }
     
     func setCollectionViewConstraints() {
@@ -108,6 +117,7 @@ class MainScreenController: UIViewController, MainScreenProtocol {
     
     func getDrugs(drugs: [DrugEntity]) {
         self.drugs = helperCV.shorteningText(drugs: helperCV.texEditing(drugs: drugs), view: view, font: infoFont)
+        filtersVC.filtesCCell.setData(drugs: drugs)
     }
     
     func collectionViewDidLoad() {
@@ -123,18 +133,19 @@ class MainScreenController: UIViewController, MainScreenProtocol {
     }
     
     @objc func backButtonClickInLargeView(_ sender: UIButton) {
-        let width = view.frame.width/10
+        let spaceWidth = view.frame.width/10
         backToColViewButton.tintColor = .black
         let indexPath = collectionView.indexPathForItem(at: pointCell) ?? IndexPath(item: 0, section: 0)
         let cellRect = collectionView.cellForItem(at: indexPath)
         UIView.animate(withDuration: 1.4, animations: {
             self.navigationController?.setNavigationBarHidden(false, animated: true)
+            self.navigationController?.tabBarController?.tabBar.alpha = 1
         })
         UIView.animate(withDuration: 0.1, animations: {
-            self.backToColViewButton.frame = CGRect(x: 8*width - 60, y: 5, width: 35, height: 35) //250
+            self.backToColViewButton.frame = CGRect(x: 8*spaceWidth - 60, y: 5, width: 35, height: 35) //250
         })
         UIView.animate(withDuration: 0.1, delay: 0.1, animations: {
-            self.backToColViewButton.frame = CGRect(x: 8*width - 40, y: 5, width: 35, height: 35) //260
+            self.backToColViewButton.frame = CGRect(x: 8*spaceWidth - 40, y: 5, width: 35, height: 35) //260
         })
         UIView.animate(withDuration: 0.5, delay: 0.2, animations: {
             self.enlargedView.imageCatigories.alpha = 0
@@ -169,11 +180,11 @@ class MainScreenController: UIViewController, MainScreenProtocol {
     }
     
     @objc func clickOnFavoritesButton(_ sender: UIButton) {
-        let config = UIImage.SymbolConfiguration(pointSize: 30, weight: .medium, scale: .large)
-        let imageForBackCVButton = UIImage(systemName: "star.fill", withConfiguration: config)
+        let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium, scale: .large)
+        let imageForBackCVButton = UIImage(systemName: "heart.fill", withConfiguration: config)
         UIView.animate(withDuration: 0.3, animations: {
             self.favoritesButton.setImage(imageForBackCVButton, for: .normal)
-            self.favoritesButton.tintColor = #colorLiteral(red: 1, green: 0.7667039037, blue: 0, alpha: 1)
+            self.favoritesButton.tintColor = #colorLiteral(red: 0.7374350429, green: 0.2682942748, blue: 0.2212107182, alpha: 1)
         })
     }
     
@@ -205,13 +216,13 @@ class MainScreenController: UIViewController, MainScreenProtocol {
         backToColViewButton.frame = CGRect(x: 5, y: 5, width: 35, height: 35)
         enlargedView.card.addSubview(backToColViewButton)
         
-        config = UIImage.SymbolConfiguration(pointSize: 30, weight: .medium, scale: .large)
-        imageForBackCVButton = UIImage(systemName: "star", withConfiguration: config)
+        config = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium, scale: .large)
+        imageForBackCVButton = UIImage(systemName: "heart", withConfiguration: config)
         favoritesButton.setImage(imageForBackCVButton, for: .normal)
         favoritesButton.addTarget(self, action: #selector(clickOnFavoritesButton), for: .touchUpInside)
         favoritesButton.tintColor = .gray
         let width = view.frame.width/10
-        favoritesButton.frame = CGRect(x: 8*width - 50, y: 445, width: 35, height: 32)
+        favoritesButton.frame = CGRect(x: 8*width - 47, y: 445, width: 35, height: 32)
         enlargedView.card.addSubview(favoritesButton)
         
         buyButton.setTitle("ГДЕ КУПИТЬ", for: .normal)
@@ -268,20 +279,55 @@ class MainScreenController: UIViewController, MainScreenProtocol {
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }
+    
+    func getCatigories(catigories: [String]) {
+        drugsWithCatigories.removeAll()
+        if catigories != [] {
+            for catigory in catigories {
+                for item in drugs {
+                    if item.categories.name == catigory {
+                        drugsWithCatigories.append(item)
+                    }
+                }
+            }
+        }
+        collectionViewDidLoad()
+    }
 }
 
-extension MainScreenController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UISearchBarDelegate, UISearchControllerDelegate {
+
+extension MainScreenController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UISearchBarDelegate, UISearchControllerDelegate, UIViewControllerTransitioningDelegate {
+
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        PresentationController(presentedViewController: presented, presenting: presenting)
+    }
+    
+    func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
+        filtersVC.modalPresentationStyle = .custom
+        filtersVC.transitioningDelegate = self
+        self.present(filtersVC, animated: true, completion: nil)
+    }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         self.filterSearch.removeAll()
         guard searchText != "" || searchText != " " else {
             return
         }
-        for item in drugs {
-            let text = searchText.lowercased()
-            let isItemContain = item.name.lowercased().range(of: text)
-            if isItemContain != nil {
-                filterSearch.append(item)
+        if drugsWithCatigories != [] {
+            for item in drugsWithCatigories {
+                let text = searchText.lowercased()
+                let isItemContain = item.name.lowercased().range(of: text)
+                if isItemContain != nil {
+                    filterSearch.append(item)
+                }
+            }
+        } else {
+            for item in drugs {
+                let text = searchText.lowercased()
+                let isItemContain = item.name.lowercased().range(of: text)
+                if isItemContain != nil {
+                    filterSearch.append(item)
+                }
             }
         }
         collectionViewDidLoad()
@@ -306,10 +352,18 @@ extension MainScreenController: UICollectionViewDelegateFlowLayout, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard filterSearch != [] else {
-            return drugs.count
+        
+        if drugsWithCatigories != [] {
+            guard filterSearch != [] else {
+                return drugsWithCatigories.count
+            }
+            return filterSearch.count
+        } else {
+           guard filterSearch != [] else {
+                return drugs.count
+            }
+            return filterSearch.count
         }
-        return filterSearch.count
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -334,6 +388,7 @@ extension MainScreenController: UICollectionViewDelegateFlowLayout, UICollection
             self.enlargedView.image.alpha = 1
             
             self.navigationController?.setNavigationBarHidden(true, animated: true)
+            self.navigationController?.tabBarController?.tabBar.alpha = 0
         })
         UIView.animate(withDuration: 0.4, delay: 0.4, animations: {
             self.backToColViewButton.alpha = 1
@@ -350,12 +405,14 @@ extension MainScreenController: UICollectionViewDelegateFlowLayout, UICollection
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         var cell = collectionView.dequeueReusableCell(withReuseIdentifier: "customCell", for: indexPath) as! CollectionViewCell
-        guard filterSearch != [] else {
-            let item = drugs[indexPath.row]
-            cell = helperCV.setDataToCell(cell: cell, item: item)
-            return cell
+        var item: DrugEntity
+        if filterSearch != [] {
+            item = filterSearch[indexPath.row]
+        } else if drugsWithCatigories != [] {
+            item = drugsWithCatigories[indexPath.row]
+        } else {
+            item = drugs[indexPath.row]
         }
-        let item = filterSearch[indexPath.row]
         cell = helperCV.setDataToCell(cell: cell, item: item)
         return cell
     }
